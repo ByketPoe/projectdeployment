@@ -6,14 +6,24 @@ app = Flask(__name__)
 def index():
         return "This is index"
 
-# get all
+# get all collections
 @app.route('/data', methods=['GET'])
 def getdata():
+        # get info on all collections
+        
         return "getdata"
 
-# get by id
+# get all collection types
+@app.route('/data', methods=['GET'])
+def getcollectiontypes():
+        # get info on all collection types
+        
+        return "getdata"
+
+# get data by id
 @app.route('/data/<int:id>', methods=['GET'])
-def getdatabyid(id):
+def getdatabycid(id):
+        # get data by collection id
         return "get data by id"
 
 # create
