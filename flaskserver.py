@@ -32,15 +32,27 @@ def createcollection():
         jsonstring = request.json
         collection = {}
         if "name" not in jsonstring:
-                abort(401)
+                abort(403)
         collection["name"] = jsonstring["name"]
+        if "collectiontypeid" not in jsonstring:
+                abort(403)
         collection["collectiontypeid"] = jsonstring["collectiontypeid"]
+        if "startdate" not in jsonstring:
+                abort(403)
         collection["startdate"] = jsonstring["startdate"]
+        if "enddate" not in jsonstring:
+                abort(403)
         collection["enddate"] = jsonstring["enddate"]
+        if "locationname" not in jsonstring:
+                abort(403)
         collection["locationname"] = jsonstring["locationname"]
+        if "measurement" not in jsonstring:
+                abort(403)
         collection["measurement"] = jsonstring["measurement"]
+        if "units" not in jsonstring:
+                abort(403)
         collection["units"] = jsonstring["units"]
-        return jsonify(sciDAO.createCollection)
+        return jsonify(sciDAO.createCollection(collection))
 
 # create data
 @app.route('/datacollections', methods=['POST'])

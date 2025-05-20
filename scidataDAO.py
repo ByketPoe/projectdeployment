@@ -18,7 +18,7 @@ class SciDAO:
     # create a collection
     def createCollection(self, colname):
         #TODO implement
-        return {"name":"collection1", "collectiontypeid":1, "startdate":"2025-04-04 00:00:00", "enddate":"2025-06-04 00:00:00", "locationname":"Rockall", "measurement":"Temperature", "units":"Celsius"}
+        return colname
     # add data to collection
     def createData(self, colname, data):
         #TODO implement
@@ -43,8 +43,8 @@ class SciDAO:
 sciDAO = SciDAO()
 
 if __name__ == "__main__":
-    collection = {"name":"collection1", "collectiontypeid":1, "startdate":"2025-04-04 00:00:00", "enddate":"2025-06-04 00:00:00", "locationname":"Rockall", "measurement":"Temperature", "units":"Celsius"} 
-    data = {"id":1, "collectionname":"collection1", "datum":"2.2", "lat":"0", "long":"0", "datetime":"2025-06-04 00:00:00"}
+    collection = {"name":"collection2", "collectiontypeid":1, "startdate":"2025-04-04 00:00:00", "enddate":"2025-06-04 00:00:00", "locationname":"Rockall", "measurement":"Temperature", "units":"Celsius"} 
+    data = {"id":2, "collectionname":"collection1", "datum":"2.2", "lat":"0", "long":"0", "datetime":"2025-06-04 00:00:00"}
     print ("test getallCollections")
     print (f"\t{sciDAO.getAllCollections()}")
     print ("test getallCollectionTypes")
