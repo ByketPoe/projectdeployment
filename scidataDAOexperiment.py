@@ -28,10 +28,47 @@ class SciDAO:
         )
         self.cursor = self.conn.cursor()
         return self.cursor
+    
+    def closeAll(self):
+        self.conn.close()
+        self.cursor.close()
 
+    def fetchAll(self, sqlstring):
+        cursor = self.getcursor()
+        cursor.execute(sqlstring)
+        results = cursor.fetchall()
+        returnArray = []
+        #print(results)
+        for result in results:
+            #print(result)
+            returnArray.append(self.convertToDictionary(result))
+        self.closeAll()
+        return returnArray
+
+    def fetchOne(self, sqlstring, values): # values is a tuple
+        cursor = self.getcursor()
+        cursor.execute(sqlstring, values)
+        result = cursor.fetchone()
+        returnvalue = self.convertToDictionary(result)
+        self.closeAll()
+        return returnvalue
+
+    def commitChange(self, changeitem, sqlstring, values, committype): # values is a tuple, commit type is a string (UPDATE, CREATE, DELETE)
+        cursor = self.getcursor()
+        cursor.execute(sqlstring, values)
+        self.connection.commit()
+        if committype.upper() == "CREATE":
+            newid = cursor.lastrowid
+            changeitem["id"] = newid
+            self.closeAll()
+            return changeitem
+        else:
+            self.closeAll()
+            print(committype, "completed on item: ", changeitem)
     # get all collections          
     def getAllCollections(self):
-        #TODO implement
+        #TODO implement - formulate SQL query and call functions to execute
+
         return {"name":1, "collectiontypeid":1, "startdate":"2025-04-04 00:00:00", "enddate":"2025-06-04 00:00:00", "locationname":"Rockall", "measurement":"Temperature", "units":"Celsius"}
     # get all collection types 
     def getAllCollectionTypes(self):
@@ -65,6 +102,14 @@ class SciDAO:
     def deleteData(self, id):
         #TODO implement
         return True
+    def convertToDictionary(self, resultLine):
+        attkeys=[""]
+        dictOut = {}
+        currentkey = 0
+        for attrib in resultLine:
+            dictOut[attkeys[currentkey]] = attrib
+            currentkey = currentkey + 1 
+        return dictOut
         
 sciDAO = SciDAO()
 
