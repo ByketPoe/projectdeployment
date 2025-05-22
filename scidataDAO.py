@@ -2,7 +2,17 @@
 # Object for accessing, updating and deleting science data from database
 # Author: Emma Farrell
 
+import mysql.connector
+import db_config as cfg
+
 class SciDAO:
+    conn = ""
+    cursor = ""
+    host = ""
+    user = ""
+    pw = ""
+    db = ""
+
     # get all collections          
     def getAllCollections(self):
         #TODO implement
