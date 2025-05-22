@@ -16,15 +16,15 @@ class SciDAO:
         #TODO implement
         return {"id":1, "collectionname":"collection1", "datum":"2.2", "lat":"0", "long":"0", "datetime":"2025-06-04 00:00:00"}
     # create a collection
-    def createCollection(self, colname):
+    def createCollection(self, collection):
         #TODO implement
-        return colname
+        return collection
     # add data to collection
     def createData(self, colname, data):
         #TODO implement
         return {"id":1, "collectionname":"collection1", "datum":"2.2", "lat":"0", "long":"0", "datetime":"2025-06-04 00:00:00"}
     # update collection
-    def updateCollection(self, colname):
+    def updateCollection(self, collection):
         #TODO implement
         return {"name":"collection1", "collectiontypeid":1, "startdate":"2025-04-04 00:00:00", "enddate":"2025-06-04 00:00:00", "locationname":"Rockall", "measurement":"Temperature", "units":"Celsius"}
     # update data
@@ -32,7 +32,7 @@ class SciDAO:
         #TODO implement
         return {"id":1, "collectionname":"collection1", "datum":"2.2", "lat":"0", "long":"0", "datetime":"2025-06-04 00:00:00"}
     # delete a collection    
-    def deleteCollection(self, id):
+    def deleteCollection(self, collection):
         #TODO implement
         return True
     # delete data   
