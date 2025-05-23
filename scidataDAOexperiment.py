@@ -105,7 +105,7 @@ class SciDAO:
     def createCollection(self, collection):
         #TODO call from Flask, comment
         sqlstring = "INSERT INTO collection (name, collectiontypeid, startdate, enddate, location, measurement, units) VALUES (%s, %s, %s, %s, %s, %s, %s)"
-        values = (collection["name"], collection["collectiontypeid"], collection["startdate"], collection["enddate"], collection["location"], collection["measurement"], collection["units"],)
+        values = (collection["name"], collection["collectiontypeid"], collection["startdate"], collection["enddate"], collection["location"], collection["measurement"], collection["units"])
         self.commitChange(collection, sqlstring, values, "CREATE")
         return collection
     # add data to collection
@@ -116,23 +116,30 @@ class SciDAO:
         self.commitChange(data, sqlstring, values, "CREATE")
         return collection
     # update collection
-    def updateCollection(self, collection):
-        #TODO implement
-        return {"name":"collection1", "collectiontypeid":1, "startdate":"2025-04-04 00:00:00", "enddate":"2025-06-04 00:00:00", "locationname":"Rockall", "measurement":"Temperature", "units":"Celsius"}
+    def updateCollection(self, collection, id):
+        #TODO call from Flask, comment
+        sqlstring = "UPDATE collection SET name = %s, collectiontypeid = %s, startdate = %s, enddate = %s, location = %s, measurement = %s, units = %s WHERE id = %s"
+        values = (collection["name"], collection["collectiontypeid"], collection["startdate"], collection["enddate"], collection["location"], collection["measurement"], collection["units"], id)
+        self.commitChange(collection, sqlstring, values, "UPDATE")
     # update data
-    def updateData(self, colname, data):
-        #TODO implement
-        return {"id":1, "collectionname":"collection1", "datum":"2.2", "lat":"0", "long":"0", "datetime":"2025-06-04 00:00:00"}
+    def updateData(self, data, id):
+        #TODO call from Flask, comment
+        sqlstring = "UPDATE data SET collectionid = %s, datum = %s, latitude = %s, longitude = %s, datecollected = %s WHERE id = %s"
+        values = (data["collectionid"], data["datum"], data["latitude"], data["longitude"], data["datecollected"], id)
+        self.commitChange(data, sqlstring, values, "UPDATE")
     # delete a collection    
-    def deleteCollection(self, collection):
-        #TODO implement
-        return True
+    def deleteCollection(self, id):
+        #TODO call from Flask, comment
+        sqlstring = "DELETE FROM collection WHERE id = %s"
+        values = (id,)
+        self.commitChange(None, sqlstring, values, "DELETE")
     # delete data   
     def deleteData(self, id):
-        #TODO implement
-        return True
+        #TODO call from Flask, comment
+        sqlstring = "DELETE FROM data WHERE id = %s"
+        values = (id,)
+        self.commitChange(None, sqlstring, values, "DELETE")
     def convertToDictionary(self, resultLine, attkeys):
-        # attkeys=[""]
         dictOut = {}
         currentkey = 0
         for attrib in resultLine:
@@ -143,13 +150,18 @@ class SciDAO:
 sciDAO = SciDAO()
 
 if __name__ == "__main__":
-    collection = {"name":"firstcollection", "collectiontypeid":1, "startdate":"2025-04-04 00:00:00", "enddate":"2025-06-04 00:00:00", "location":"Rockall", "measurement":"Temperature", "units":"Celsius"} 
-    data = {"collectionid":2, "datum":"2.2", "latitude":"0", "longitude":"0", "datecollected":"2025-06-04 00:00:00"}
+    collection = {"name":"nextcollection", "collectiontypeid":2, "startdate":"2025-05-04 00:00:00", "enddate":"2025-07-04 00:00:00", "location":"Lough Key", "measurement":"Salinity", "units":"g/L"} 
+    data = {"collectionid":1, "datum":"5.9", "latitude":"12.678", "longitude":"25.806796", "datecollected":"2025-07-04 21:37:22"}
     # print(sciDAO.createCollection(collection))
-    print(sciDAO.createData(data))
+    # print(sciDAO.createData(data))
+    # sciDAO.updateCollection(collection, 2)
+    # sciDAO.updateData(data, 1)
+    # sciDAO.deleteCollection(2)
+    # sciDAO.deleteData(1)
     print(sciDAO.getAllCollections())
     print(sciDAO.getAllCollectionTypes())
     print(sciDAO.getAllData())
+    
     # print ("test getallCollections")
     # print (f"\t{sciDAO.getAllCollections()}")
     # print ("test getallCollectionTypes")
