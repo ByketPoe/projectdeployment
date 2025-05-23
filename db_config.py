@@ -1,6 +1,6 @@
 sql = {
     'host':"localhost",
-    'user':"",
-    'password':"",
-    'database':""
+    'user':"root",
+    'password':"data",
+    'database':"science_measurements"
 }

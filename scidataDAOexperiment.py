@@ -13,6 +13,12 @@ class SciDAO:
     pw = ""
     db = ""
 
+    dbvalues = {
+        "collection": ["id", "name", "collectiontypeid", "startdate", "enddate", "location", "measurement", "units"],
+        "collection_type": ["id", "collectiontype"],
+        "data": ["id", "collectionid", "datum", "latitude", "longitude", "datecollected"]
+    }
+
     def __init__(self):
         self.host = cfg.sql["host"]
         self.user = cfg.sql["user"]
@@ -33,7 +39,7 @@ class SciDAO:
         self.conn.close()
         self.cursor.close()
 
-    def fetchAll(self, sqlstring):
+    def fetchAll(self, sqlstring, querytable):
         cursor = self.getcursor()
         cursor.execute(sqlstring)
         results = cursor.fetchall()
@@ -41,7 +47,7 @@ class SciDAO:
         #print(results)
         for result in results:
             #print(result)
-            returnArray.append(self.convertToDictionary(result))
+            returnArray.append(self.convertToDictionary(result, querytable))
         self.closeAll()
         return returnArray
 
@@ -56,7 +62,7 @@ class SciDAO:
     def commitChange(self, changeitem, sqlstring, values, committype): # values is a tuple, commit type is a string (UPDATE, CREATE, DELETE)
         cursor = self.getcursor()
         cursor.execute(sqlstring, values)
-        self.connection.commit()
+        self.conn.commit()
         if committype.upper() == "CREATE":
             newid = cursor.lastrowid
             changeitem["id"] = newid
@@ -68,24 +74,47 @@ class SciDAO:
     # get all collections          
     def getAllCollections(self):
         #TODO implement - formulate SQL query and call functions to execute
-
-        return {"name":1, "collectiontypeid":1, "startdate":"2025-04-04 00:00:00", "enddate":"2025-06-04 00:00:00", "locationname":"Rockall", "measurement":"Temperature", "units":"Celsius"}
+        sqlstring = "SELECT * FROM collection"
+        returnArray = self.fetchAll(sqlstring, self.dbvalues["collection"])
+        return returnArray
     # get all collection types 
     def getAllCollectionTypes(self):
-        #TODO implement
-        return {"id":1, "collectiontype":"time series"}
-    # find by id
+        #TODO comment
+        sqlstring = "SELECT * FROM collection_type"
+        returnArray = self.fetchAll(sqlstring, self.dbvalues["collection_type"])
+        return returnArray
+    # get all data
+    def getAllData(self):
+        #TODO call from Flask, comment
+        sqlstring = "SELECT * FROM data"
+        returnArray = self.fetchAll(sqlstring, self.dbvalues["data"])
+        return returnArray
+    # find collection by id
+    def getCollectionByID(self, id):
+        #TODO call from Flask, comment
+        sqlstring = "SELECT * FROM collection WHERE id = %s"
+        returnArray = self.fetchOne(sqlstring, id)
+        return returnArray
+    # find data by id
     def getDataByID(self, id):
-        #TODO implement
-        return {"id":1, "collectionname":"collection1", "datum":"2.2", "lat":"0", "long":"0", "datetime":"2025-06-04 00:00:00"}
+        #TODO test
+        sqlstring = "SELECT * FROM data WHERE id = %s"
+        returnArray = self.fetchOne(sqlstring, id)
+        return returnArray
     # create a collection
     def createCollection(self, collection):
-        #TODO implement
+        #TODO call from Flask, comment
+        sqlstring = "INSERT INTO collection (name, collectiontypeid, startdate, enddate, location, measurement, units) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        values = (collection["name"], collection["collectiontypeid"], collection["startdate"], collection["enddate"], collection["location"], collection["measurement"], collection["units"],)
+        self.commitChange(collection, sqlstring, values, "CREATE")
         return collection
     # add data to collection
-    def createData(self, colname, data):
-        #TODO implement
-        return {"id":1, "collectionname":"collection1", "datum":"2.2", "lat":"0", "long":"0", "datetime":"2025-06-04 00:00:00"}
+    def createData(self, data):
+        #TODO call from Flask, comment
+        sqlstring = "INSERT INTO data (collectionid, datum, latitude, longitude, datecollected) VALUES (%s, %s, %s, %s, %s)"
+        values = (data["collectionid"], data["datum"], data["latitude"], data["longitude"], data["datecollected"])
+        self.commitChange(data, sqlstring, values, "CREATE")
+        return collection
     # update collection
     def updateCollection(self, collection):
         #TODO implement
@@ -102,8 +131,8 @@ class SciDAO:
     def deleteData(self, id):
         #TODO implement
         return True
-    def convertToDictionary(self, resultLine):
-        attkeys=[""]
+    def convertToDictionary(self, resultLine, attkeys):
+        # attkeys=[""]
         dictOut = {}
         currentkey = 0
         for attrib in resultLine:
@@ -114,23 +143,28 @@ class SciDAO:
 sciDAO = SciDAO()
 
 if __name__ == "__main__":
-    collection = {"name":"collection2", "collectiontypeid":1, "startdate":"2025-04-04 00:00:00", "enddate":"2025-06-04 00:00:00", "locationname":"Rockall", "measurement":"Temperature", "units":"Celsius"} 
-    data = {"id":2, "collectionname":"collection1", "datum":"2.2", "lat":"0", "long":"0", "datetime":"2025-06-04 00:00:00"}
-    print ("test getallCollections")
-    print (f"\t{sciDAO.getAllCollections()}")
-    print ("test getallCollectionTypes")
-    print (f"\t{sciDAO.getAllCollectionTypes()}")
-    print ("test finddataById(1)")
-    print (f"\t{sciDAO.getDataByID(1)}")
-    print ("test create collection")
-    print (f"\t{sciDAO.createCollection(collection)}")
-    print ("test create data")
-    print (f"\t{sciDAO.createCollection(data)}")
-    print ("test update collection")
-    print (f"\t{sciDAO.updateCollection(collection)}")
-    print ("test update data")
-    print (f"\t{sciDAO.updateData(collection, data)}")
-    print ("test delete collection")
-    print (f"\t{sciDAO.deleteCollection(1)}")
-    print ("test delete data")
-    print (f"\t{sciDAO.deleteData(1)}")
+    collection = {"name":"firstcollection", "collectiontypeid":1, "startdate":"2025-04-04 00:00:00", "enddate":"2025-06-04 00:00:00", "location":"Rockall", "measurement":"Temperature", "units":"Celsius"} 
+    data = {"collectionid":2, "datum":"2.2", "latitude":"0", "longitude":"0", "datecollected":"2025-06-04 00:00:00"}
+    # print(sciDAO.createCollection(collection))
+    print(sciDAO.createData(data))
+    print(sciDAO.getAllCollections())
+    print(sciDAO.getAllCollectionTypes())
+    print(sciDAO.getAllData())
+    # print ("test getallCollections")
+    # print (f"\t{sciDAO.getAllCollections()}")
+    # print ("test getallCollectionTypes")
+    # print (f"\t{sciDAO.getAllCollectionTypes()}")
+    # print ("test finddataById(1)")
+    # print (f"\t{sciDAO.getDataByID(1)}")
+    # print ("test create collection")
+    # print (f"\t{sciDAO.createCollection(collection)}")
+    # print ("test create data")
+    # print (f"\t{sciDAO.createCollection(data)}")
+    # print ("test update collection")
+    # print (f"\t{sciDAO.updateCollection(collection)}")
+    # print ("test update data")
+    # print (f"\t{sciDAO.updateData(collection, data)}")
+    # print ("test delete collection")
+    # print (f"\t{sciDAO.deleteCollection(1)}")
+    # print ("test delete data")
+    # print (f"\t{sciDAO.deleteData(1)}")
