@@ -18,12 +18,22 @@ def getcollections():
 def getcollectiontypes():
         # get info on all collection types
         return jsonify(sciDAO.getAllCollectionTypes())
+# get all data
+@app.route('/data', methods=['GET'])
+def getdata():
+        # get info on all collection types
+        return jsonify(sciDAO.getAllData())
 
-# get data by id
+# get collection by id
 @app.route('/datacollections/<int:id>', methods=['GET'])
-def getdatabycid(id):
+def getcollectionbyid(id):
         # get data by collection id
-        return jsonify(sciDAO.getDataByID(id))
+        return jsonify(sciDAO.getCollectionByID((id,)))
+# get data by id
+@app.route('/data/<int:id>', methods=['GET'])
+def getdatabyid(id):
+        # get data by collection id
+        return jsonify(sciDAO.getDataByID((id,)))
 
 # create collection
 @app.route('/datacollections', methods=['POST'])
@@ -43,9 +53,9 @@ def createcollection():
         if "enddate" not in jsonstring:
                 abort(403)
         collection["enddate"] = jsonstring["enddate"]
-        if "locationname" not in jsonstring:
+        if "location" not in jsonstring:
                 abort(403)
-        collection["locationname"] = jsonstring["locationname"]
+        collection["location"] = jsonstring["location"]
         if "measurement" not in jsonstring:
                 abort(403)
         collection["measurement"] = jsonstring["measurement"]
@@ -53,36 +63,32 @@ def createcollection():
                 abort(403)
         collection["units"] = jsonstring["units"]
         return jsonify(sciDAO.createCollection(collection))
-
 # create data
-@app.route('/datacollections', methods=['POST'])
+@app.route('/data', methods=['POST'])
 def createdata():
         # create new data entry
         jsonstring = request.json
         data = {}
-        if "id" not in jsonstring:
+        if "collectionid" not in jsonstring:
                 abort(403)
-        data["id"] = jsonstring["id"]
-        if "collectionname" not in jsonstring:
-                abort(403)
-        data["collectionname"] = jsonstring["collectionname"]
+        data["collectionid"] = jsonstring["collectionid"]
         if "datum" not in jsonstring:
                 abort(403)
         data["datum"] = jsonstring["datum"]
-        if "lat" not in jsonstring:
+        if "latitude" not in jsonstring:
                 abort(403)
-        data["lat"] = jsonstring["lat"]
-        if "long" not in jsonstring:
+        data["latitude"] = jsonstring["latitude"]
+        if "longitude" not in jsonstring:
                 abort(403)
-        data["long"] = jsonstring["long"]
-        if "datetime" not in jsonstring:
+        data["longitude"] = jsonstring["longitude"]
+        if "datecollected" not in jsonstring:
                 abort(403)
-        data["datetime"] = jsonstring["datetime"]
-        return jsonify(sciDAO.createData(data["collectionname"], data))
+        data["datecollected"] = jsonstring["datecollected"]
+        return jsonify(sciDAO.createData(data))
 
 # update collection
 @app.route('/datacollections/<int:id>', methods=['PUT'])
-def updatedata(id):
+def updatecollection(id):
         # update existing collection 
         jsonstring = request.json
         collection = {}
@@ -94,25 +100,35 @@ def updatedata(id):
                 collection["startdate"] = jsonstring["startdate"]
         if "enddate" in jsonstring:
                 collection["enddate"] = jsonstring["enddate"]
-        if "locationname" in jsonstring:
-                collection["locationname"] = jsonstring["locationname"]
+        if "location" in jsonstring:
+                collection["location"] = jsonstring["location"]
         if "measurement" in jsonstring:
                 collection["measurement"] = jsonstring["measurement"]
         if "units" in jsonstring:
                 collection["units"] = jsonstring["units"]
-        return jsonify(sciDAO.updateCollection(collection))
-
+        return jsonify(sciDAO.updateCollection(collection, id))
 # update data
 @app.route('/data/<int:id>', methods=['PUT'])
 def updatedata(id):
+        # update existing data 
         jsonstring = request.json
-        return f"update {id} {jsonstring}"
+        data = {}
+        if "collectionid" in jsonstring:
+                data["collectionid"] = jsonstring["collectionid"]
+        if "datum" in jsonstring:
+                data["datum"] = jsonstring["datum"]
+        if "latitude" in jsonstring:
+                data["latitude"] = jsonstring["latitude"]
+        if "longitude" in jsonstring:
+                data["longitude"] = jsonstring["longitude"]
+        if "datecollected" in jsonstring:
+                data["datecollected"] = jsonstring["datecollected"]       
+        return jsonify(sciDAO.updateData(data, id))
 
 # delete collection
-@app.route('/datacollections/<str:name>', methods=['DELETE'])
-def deletedata(name):
-        return jsonify(sciDAO.deleteCollection(name))
-
+@app.route('/datacollections/<int:id>', methods=['DELETE'])
+def deletecollection(id):
+        return jsonify(sciDAO.deleteCollection(id))
 # delete data
 @app.route('/data/<int:id>', methods=['DELETE'])
 def deletedata(id):
