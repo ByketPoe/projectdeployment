@@ -20,7 +20,7 @@
     function createCollection(collection, callback){
         console.log(JSON.stringify(collection));
         $.ajax({
-            "url": "http://127.0.0.1:5000/datacollections/",
+            "url": "datacollections/",
             "method":"POST",
             "data":JSON.stringify(collection),
             "dataType": "JSON",
@@ -38,7 +38,7 @@
     function updateCollection(collection, callback){
         console.log("updateing " +JSON.stringify(collection));
         $.ajax({
-            "url": "http://127.0.0.1:5000/datacollections/"+encodeURI(collection.id),
+            "url": "datacollections/"+encodeURI(collection.id),
             "method":"PUT",
             "data":JSON.stringify(collection),
             "dataType": "JSON",
@@ -54,7 +54,7 @@
     }
     function deleteCollection(id, callback){
         $.ajax({
-            "url": "http://127.0.0.1:5000/datacollections/"+id,
+            "url": "datacollections/"+id,
             "method":"DELETE",
             "data":"",
             "dataType": "JSON",
