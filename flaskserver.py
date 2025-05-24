@@ -1,7 +1,9 @@
 from flask import Flask, request, jsonify, abort
 from scidataDAO import sciDAO
+#from flask_cors import CORS
 
 app = Flask(__name__)
+#CORS(app)
 
 @app.route('/')
 def index():
@@ -11,7 +13,7 @@ def index():
 @app.route('/datacollections', methods=['GET'])
 def getcollections():
         # get info on all collections
-        return jsonify(sciDAO.getAllCollections())
+        return jsonify(sciDAO.getAllCollections()).headers.add('Access-Control-Allow-Origin', '*')
         
 # get all collection types
 @app.route('/datacollectiontypes', methods=['GET'])
