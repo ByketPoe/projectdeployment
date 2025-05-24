@@ -13,7 +13,7 @@ def index():
 @app.route('/datacollections', methods=['GET'])
 def getcollections():
         # get info on all collections
-        return jsonify(sciDAO.getAllCollections()).headers.add('Access-Control-Allow-Origin', '*')
+        return jsonify(sciDAO.getAllCollections())
         
 # get all collection types
 @app.route('/datacollectiontypes', methods=['GET'])
