@@ -21,7 +21,7 @@ def renderctypes():
         return render_template('collectiontypes.html')
        
 # get all collection types
-@app.route('/datacollectiontypes', methods=['GET'])
+@app.route('/getdatacollectiontypes', methods=['GET'])
 def getcollectiontypes():
         # get info on all collection types
         return jsonify(sciDAO.getAllCollectionTypes())
