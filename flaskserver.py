@@ -14,16 +14,27 @@ def index():
 def getcollections():
         # get info on all collections
         return jsonify(sciDAO.getAllCollections())
-        
+
+# show collection types page
+@app.route('/datacollectiontypes', methods=['GET'])
+def renderctypes():
+        return render_template('collectiontypes.html')
+       
 # get all collection types
 @app.route('/datacollectiontypes', methods=['GET'])
 def getcollectiontypes():
         # get info on all collection types
         return jsonify(sciDAO.getAllCollectionTypes())
+
+# show data page
+@app.route('/data', methods=['GET'])
+def renderdata():
+        return render_template('createdata.html')
+
 # get all data
 @app.route('/data', methods=['GET'])
 def getdata():
-        # get info on all collection types
+        # get info on all data
         return jsonify(sciDAO.getAllData())
 
 # get collection by id
