@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, abort
+from flask import Flask, request, jsonify, abort, render_template
 from scidataDAO import sciDAO
 #from flask_cors import CORS
 
@@ -7,7 +7,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index():
-        return "This is index"
+        return render_template('index.html')
 
 # get all collections
 @app.route('/datacollections', methods=['GET'])

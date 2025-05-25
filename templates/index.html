@@ -1,0 +1,309 @@
+<html>
+    <head>
+        <title>View Oceanographic Data Collections</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+
+        <script src="./ajaxcalls.js"></script>
+    </head>
+    <body>
+        <h1>Oceanographic Data Collections</h1>
+        <div><button id="button-showCreate" onclick="showCreate()">Create a data collection</button><br/><br/></div>
+        <div>
+            <table border="1" id="collectionTable">
+                <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Collection Type</th>
+                        <th>Start Date</th>
+                        <th>End Date</th>
+                        <th>Location</th>
+                        <th>Measurement</th>
+                        <th>Units</th>
+                        <th>Update</th>
+                        <th>Delete</th>
+                </tr>
+                <tr id="1">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><button onclick="showUpdate(this)">update</button></td>
+                    <td><button onclick="doDelete(this)">delete</button></td>
+                   
+            </tr>
+
+        </table>
+        <br/>
+        </div>
+        <div id="createUpdateForm" style="display:none">
+            <!-- spans are like divs but do not go onto a new line -->
+            <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> data collection</h2>
+            ID <input type="text" name="id"><br/>
+            Name <input type="text" name="name"><br/>
+            Collection Type <input type="text" name="collectiontype"><br/>
+            Start Date <input type="text" name="startdate"><br/>
+            End Date <input type="text" name="enddate"><br/>
+            Location <input type="text" name="location"><br/>
+            Measurement <input type="text" name="measurement"><br/>
+            Units <input type="text" name="units"><br/>
+           
+            <span><button id="button-doCreate" onclick="doCreate()">Create</button></span>
+ 			<span><button id="button-doUpdate" onclick="doUpdate()">Update</button></span>
+             <!-- "display:none" will make it hidden-->
+
+
+        </div>
+        
+    </body>
+    <script>
+         function getAllAjax(callback){
+        $.ajax({
+            "url": "/datacollections",
+            "method":"GET",
+            "data":"",
+            "dataType": "JSON",
+            "success":function(result){
+                //console.log(result);
+                for (collection of result){
+                    addCollectionToTable(collection)
+                }                     
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+
+    }
+        function showCreate(){
+            document.getElementById("createUpdateForm").style.display = "block"
+            
+            document.getElementById("button-doCreate").style.display = "block"
+            document.getElementById("button-doUpdate").style.display = "none"
+            document.getElementById("createLabel").style.display = "inline"
+            document.getElementById("updateLabel").style.display = "none"
+
+            document.getElementById("button-showCreate").style.display = "none"
+            document.getElementById("collectionTable").style.display = "none"
+            
+        }
+        function showUpdate(buttonElement){
+            document.getElementById("createUpdateForm").style.display = "block"
+           
+            document.getElementById("button-doCreate").style.display = "none"
+            document.getElementById("button-doUpdate").style.display = "block"
+            document.getElementById("createLabel").style.display = "none"
+            document.getElementById("updateLabel").style.display = "inline"
+
+            document.getElementById("button-showCreate").style.display = "none"
+            document.getElementById("collectionTable").style.display = "none"
+
+            rowElement= buttonElement.parentNode.parentNode
+            collection = getCollectionFromRow(rowElement)
+            //console.log(getCollectionFromRow"updating")
+            //console.log(collection)
+            populateFormWithCollection(collection)
+            
+        }
+        function showViewall(){
+            document.getElementById("createUpdateForm").style.display = "none"
+           
+            document.getElementById("button-showCreate").style.display = "block"
+            document.getElementById("collectionTable").style.display = "block"
+            
+        }
+        function clearForm(){
+            var form = document.getElementById('createUpdateForm')
+
+            form.querySelector('input[name="id"]').disabled = false
+            form.querySelector('input[name="id"]').value  =''
+            form.querySelector('input[name="name"]').value=''
+            form.querySelector('input[name="collectiontype"]').value=''
+            form.querySelector('input[name="startdate"]').value=''
+            form.querySelector('input[name="enddate"]').value  =''
+            form.querySelector('input[name="location"]').value=''
+            form.querySelector('input[name="measurement"]').value=''
+            form.querySelector('input[name="units"]').value=''
+        }
+        
+        function getCollectionFromForm(){
+            var form = document.getElementById('createUpdateForm')
+
+       	    var collection = {}
+        	collection.id = form.querySelector('input[name="id"]').value
+        	collection.name = form.querySelector('input[name="name"]').value
+        	collection.collectiontype = form.querySelector('input[name="collectiontype"]').value
+        	collection.startdate = form.querySelector('input[name="startdate"]').value
+            collection.endtdate = form.querySelector('input[name="enddate"]').value
+        	collection.location = form.querySelector('input[name="location"]').value
+        	collection.measurement = form.querySelector('input[name="measurement"]').value
+        	collection.units = form.querySelector('input[name="units"]').value
+        	//console.log(JSON.stringify(collection))
+            return collection
+        }
+        function populateFormWithCollection(collection){
+       		var form = document.getElementById('createUpdateForm')
+        	form.querySelector('input[name="id"]').disabled = true
+       		form.querySelector('input[name="id"]').value  = collection.id
+       		form.querySelector('input[name="name"]').value= collection.name
+        	form.querySelector('input[name="collectiontype"]').value= collection.collectiontype
+        	form.querySelector('input[name="startdate"]').value= collection.startdate
+            form.querySelector('input[name="enddate"]').value  = collection.enddate
+       		form.querySelector('input[name="location"]').value= collection.location
+        	form.querySelector('input[name="measurement"]').value= collection.measurement
+        	form.querySelector('input[name="units"]').value= collection.units
+    }
+
+
+        function addCollectionToTable(collection){
+            var tableElement = document.getElementById('collectionTable')
+            var rowElement = tableElement.insertRow(-1)
+            
+            rowElement.setAttribute('id',collection.id)
+            
+            var cell1 = rowElement.insertCell(0);
+            cell1.innerHTML = collection.id
+            var cell2 = rowElement.insertCell(1);
+            cell2.innerHTML = collection.name
+            var cell3 = rowElement.insertCell(2);
+            cell3.innerHTML = collection.collectiontype
+            var cell4 = rowElement.insertCell(3);
+            cell4.innerHTML = collection.startdate
+            var cell5 = rowElement.insertCell(4);
+            cell4.innerHTML = collection.enddate
+            var cell6 = rowElement.insertCell(5);
+            cell4.innerHTML = collection.location
+            var cell7 = rowElement.insertCell(6);
+            cell4.innerHTML = collection.measurement
+            var cell8 = rowElement.insertCell(7);
+            cell4.innerHTML = collection.units
+            var cell9 = rowElement.insertCell(8);
+            cell5.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
+            var cell10 = rowElement.insertCell(9);
+            cell6.innerHTML = '<button onclick=doDelete(this)>delete</button>'
+
+        }
+        function getCollectionFromRow(rowElement){
+            var collection ={}
+            collection.id  = rowElement.cells[0].firstChild.textContent
+            collection.name = rowElement.cells[1].firstChild.textContent
+            collection.collectiontype = rowElement.cells[2].firstChild.textContent
+            collection.startdate = rowElement.cells[3].firstChild.textContent
+            collection.enddate  = rowElement.cells[4].firstChild.textContent
+            collection.location = rowElement.cells[5].firstChild.textContent
+            collection.measurement = rowElement.cells[6].firstChild.textContent
+            collection.units = rowElement.cells[7].firstChild.textContent
+            return collection
+        }
+        function setCollectionInRow(rowElement, collection){
+            rowElement.cells[0].firstChild.textContent= collection.id  
+            rowElement.cells[1].firstChild.textContent= collection.name
+            rowElement.cells[2].firstChild.textContent= collection.collectiontype
+            rowElement.cells[3].firstChild.textContent= collection.startdate
+            rowElement.cells[4].firstChild.textContent= collection.enddate
+            rowElement.cells[5].firstChild.textContent= collection.location  
+            rowElement.cells[6].firstChild.textContent= collection.measurement
+            rowElement.cells[7].firstChild.textContent= collection.units
+    }
+
+        function doCreate(){
+            console.log("creating a collection")
+            collection = getCollectionFromForm()
+            //console.log(collection)
+            // I need to wait until I get the id from the server before adding this to the table
+            // so  I put that code in the callback function
+            createCollection(convertDisplayCollectionToServerCollection(collection), processCreateResponse)
+           
+        }
+        function doUpdate(){
+            collection = getCollectionFromForm()
+            console.log(collection)
+            var rowElement = document.getElementById(collection.id)
+            setCollectionInRow(rowElement, collection)
+            // now I am updating on the server
+            // yes there is a chance that it will be updated on the table and not the server
+            updateCollection(convertDisplayCollectionToServerCollection(collection), doNothing)
+           
+            showViewall()
+            clearForm()
+        }
+        function doDelete(buttonElement){
+            console.log("in delete")
+            var tableElement = document.getElementById('collectionTable')
+            var rowElement = buttonElement.parentNode.parentNode;
+            // I need the id
+            id = rowElement.getAttribute("id")
+            console.log("deleting "+id)
+            deleteCollection(id, doNothing)
+           
+
+            index = rowElement.rowIndex
+            tableElement.deleteRow(index);
+
+
+        }
+
+        // populate the table
+        function processGetAllResponse(result){
+            console.log("in process")
+            console.log(result)
+            for (collection of result){
+                console.log(collection)
+                // or convert
+                displayCollection = {}
+                displayCollection.id = collection.id
+                displayCollection.name = collection.name
+                displayCollection.collectiontype = collection.collectiontype
+                displayCollection.startdate = collection.startdate
+                displayCollection.enddate = collection.enddate
+                displayCollection.location = collection.location
+                displayCollection.measurement = collection.measurement
+                displayCollection.units = collection.units
+                //console.log(displaycollection)
+                addCollectionToTable(displaycollection)
+            }
+        }
+        function convertDisplayCollectionToServerCollection(displayCollection){
+            serverCollection = {}
+            serverCollection.id = displayCollection.id
+            serverCollection.name = displayCollection.name
+            serverCollection.collectiontype = displayCollection.collectiontype
+            serverCollection.startdate = displayCollection.startdate
+            serverCollection.endtdate = displayCollection.endtdate
+            serverCollection.location = displayCollection.location
+            serverCollection.measurement = displayCollection.measurement
+            serverCollection.units = displayCollection.units
+
+            return serverCollection
+        }
+        function convertServerCollectionToDisplayCollection(collection){
+            displayCollection = {}
+            displayCollection.id = collection.id
+            displayCollection.name = collection.name
+            displayCollection.collectiontype = collection.collectiontype
+            displayCollection.startdate = collection.startdate
+            displayCollection.endtdate = collection.endtdate
+            displayCollection.location = collection.location
+            displayCollection.measurement = collection.measurement
+            displayCollection.units = collection.units
+            return displayCollection
+        }
+        function processCreateResponse(result){
+            displayCollection = convertServerCollectionToDisplayCollection(result)
+            addCollectionToTable(displayCollection)
+            showViewall()
+            clearForm()
+        }
+        // I should set this as the default function for the callback
+        function doNothing(result){
+            console.log("nothing:"+result)
+            return "done"
+        }
+         getAll(processGetAllResponse)
+
+        
+    </script>
+</html>
