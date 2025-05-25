@@ -60,7 +60,24 @@
         
     </body>
     <script>
-        //console.log("hello world")
+         function getAllAjax(callback){
+        $.ajax({
+            "url": "/datacollections",
+            "method":"GET",
+            "data":"",
+            "dataType": "JSON",
+            "success":function(result){
+                //console.log(result);
+                for (collection of result){
+                    addCollectionToTable(collection)
+                }                     
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+
+    }
         function showCreate(){
             document.getElementById("createUpdateForm").style.display = "block"
             

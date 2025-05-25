@@ -1,4 +1,4 @@
- function getAll(callback){
+ function getAllAjax(callback){
         $.ajax({
             "url": "datacollections/",
             "method":"GET",
@@ -6,6 +6,7 @@
             "dataType": "JSON",
             "success":function(result){
                 //console.log(result);
+                add
                 callback(result)
      
             },
