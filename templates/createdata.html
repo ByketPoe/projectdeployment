@@ -4,6 +4,28 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 
         <script src="./ajaxcalls.js"></script>
+        <!-- CSS only -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+        crossorigin="anonymous">
+        <style>
+        * {
+            margin-left: auto;
+            margin-right: auto;
+            text-align: center;
+            list-style-type: none;
+            }
+        td, th {
+            padding: 20;
+            border-bottom: 1px solid gray;
+        }
+        tr:hover {
+            background-color: rgb(82, 129, 218);
+            }
+        tr:nth-child(even) {
+            background-color: rgb(193, 194, 193);
+        }
+        </style>
     </head>
     <body>
         <h1>Oceanographic Data</h1>
@@ -15,18 +37,16 @@
 			  <li><a href="/data">Create Data</a></li>
 			</ul>
 		</div>
-        <div><button id="button-showCreate" onclick="showCreate()">Create a data collection</button><br/><br/></div>
-        <div>
+        <div><button id="button-showCreate" onclick="showCreate()">Create Data</button><br/><br/></div>
+        <div class = "tablediv">
             <table border="1" id="collectionTable">
                 <tr>
                         <th>ID</th>
-                        <th>Name</th>
-                        <th>Collection Type</th>
-                        <th>Start Date</th>
-                        <th>End Date</th>
-                        <th>Location</th>
-                        <th>Measurement</th>
-                        <th>Units</th>
+                        <th>Collection ID</th>
+                        <th>Datum</th>
+                        <th>Latitude</th>
+                        <th>Longitude</th>
+                        <th>Date Collected</th>
                         <th>Update</th>
                         <th>Delete</th>
                 </tr>
@@ -39,13 +59,11 @@
             <!-- spans are like divs but do not go onto a new line -->
             <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> data collection</h2>
             ID <input type="text" name="id"><br/>
-            Name <input type="text" name="name"><br/>
-            Collection Type <input type="text" name="collectiontypeid"><br/>
-            Start Date <input type="text" name="startdate"><br/>
-            End Date <input type="text" name="enddate"><br/>
-            Location <input type="text" name="location"><br/>
-            Measurement <input type="text" name="measurement"><br/>
-            Units <input type="text" name="units"><br/>
+            Collection ID <input type="text" name="collectionid"><br/>
+            Datum <input type="text" name="datum"><br/>
+            Latitude <input type="text" name="latitude"><br/>
+            Longitude <input type="text" name="longitude"><br/>
+            Date Collected <input type="text" name="datecollected"><br/>
            
             <span><button id="button-doCreate" onclick="doCreate()">Create</button></span>
  			<span><button id="button-doUpdate" onclick="doUpdate()">Update</button></span>
@@ -57,13 +75,14 @@
     </body>
     <script>
         function getAllAjax(callback){
+        console.log("getting data");
         $.ajax({
-            "url": "/datacollections",
+            "url": "/getdata",
             "method":"GET",
             "data":"",
             "dataType": "JSON",
             "success":function(result){
-                //console.log(result);
+                console.log(result);
                 for (collection of result){
                     addCollectionToTable(collection)
                 }                     
@@ -77,7 +96,7 @@
         function createCollection(collection, callback){
         console.log(JSON.stringify(collection));
         $.ajax({
-            "url": "/datacollections",
+            "url": "/data",
             "method":"POST",
             "data":JSON.stringify(collection),
             "dataType": "JSON",
@@ -96,7 +115,7 @@
         function updateCollection(collection, callback){
         console.log("updating " +JSON.stringify(collection));
         $.ajax({
-            "url": "/datacollections/"+encodeURI(collection.id),
+            "url": "/data/"+encodeURI(collection.id),
             "method":"PUT",
             "data":JSON.stringify(collection),
             "dataType": "JSON",
@@ -113,7 +132,7 @@
 
         function deleteCollection(id, callback){
         $.ajax({
-            "url": "/datacollections/"+id,
+            "url": "/data/"+id,
             "method":"DELETE",
             "data":"",
             "dataType": "JSON",
@@ -170,13 +189,11 @@
 
             form.querySelector('input[name="id"]').disabled = false
             form.querySelector('input[name="id"]').value  =''
-            form.querySelector('input[name="name"]').value=''
-            form.querySelector('input[name="collectiontypeid"]').value=''
-            form.querySelector('input[name="startdate"]').value=''
-            form.querySelector('input[name="enddate"]').value  =''
-            form.querySelector('input[name="location"]').value=''
-            form.querySelector('input[name="measurement"]').value=''
-            form.querySelector('input[name="units"]').value=''
+            form.querySelector('input[name="collectionid"]').value=''
+            form.querySelector('input[name="datum"]').value=''
+            form.querySelector('input[name="latitude"]').value=''
+            form.querySelector('input[name="longitude"]').value  =''
+            form.querySelector('input[name="datecollected"]').value=''
         }
         
         function getCollectionFromForm(){
@@ -184,13 +201,11 @@
 
        	    var collection = {}
         	collection.id = form.querySelector('input[name="id"]').value
-        	collection.name = form.querySelector('input[name="name"]').value
-        	collection.collectiontypeid = form.querySelector('input[name="collectiontypeid"]').value
-        	collection.startdate = form.querySelector('input[name="startdate"]').value
-            collection.enddate = form.querySelector('input[name="enddate"]').value
-        	collection.location = form.querySelector('input[name="location"]').value
-        	collection.measurement = form.querySelector('input[name="measurement"]').value
-        	collection.units = form.querySelector('input[name="units"]').value
+        	collection.collectionid = form.querySelector('input[name="collectionid"]').value
+        	collection.datum = form.querySelector('input[name="datum"]').value
+        	collection.latitude = form.querySelector('input[name="latitude"]').value
+            collection.longitude = form.querySelector('input[name="longitude"]').value
+        	collection.datecollected = form.querySelector('input[name="datecollected"]').value
         	//console.log(JSON.stringify(collection))
             return collection
         }
@@ -198,13 +213,11 @@
        		var form = document.getElementById('createUpdateForm')
         	form.querySelector('input[name="id"]').disabled = true
        		form.querySelector('input[name="id"]').value  = collection.id
-       		form.querySelector('input[name="name"]').value= collection.name
-        	form.querySelector('input[name="collectiontypeid"]').value= collection.collectiontypeid
-        	form.querySelector('input[name="startdate"]').value= collection.startdate
-            form.querySelector('input[name="enddate"]').value  = collection.enddate
-       		form.querySelector('input[name="location"]').value= collection.location
-        	form.querySelector('input[name="measurement"]').value= collection.measurement
-        	form.querySelector('input[name="units"]').value= collection.units
+       		form.querySelector('input[name="collectionid"]').value= ''
+        	form.querySelector('input[name="datum"]').value= collection.datum
+        	form.querySelector('input[name="latitude"]').value= collection.latitude
+            form.querySelector('input[name="longitude"]').value  = collection.longitude
+       		form.querySelector('input[name="datecollected"]').value= collection.datecollected
     }
 
 
@@ -217,47 +230,39 @@
             var cell1 = rowElement.insertCell(0);
             cell1.innerHTML = collection.id
             var cell2 = rowElement.insertCell(1);
-            cell2.innerHTML = collection.name
+            cell2.innerHTML = collection.collectionid
             var cell3 = rowElement.insertCell(2);
-            cell3.innerHTML = collection.collectiontypeid
+            cell3.innerHTML = collection.datum
             var cell4 = rowElement.insertCell(3);
-            cell4.innerHTML = collection.startdate
+            cell4.innerHTML = collection.latitude
             var cell5 = rowElement.insertCell(4);
-            cell5.innerHTML = collection.enddate
+            cell5.innerHTML = collection.longitude
             var cell6 = rowElement.insertCell(5);
-            cell6.innerHTML = collection.location
+            cell6.innerHTML = collection.datecollected
             var cell7 = rowElement.insertCell(6);
-            cell7.innerHTML = collection.measurement
+            cell7.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
             var cell8 = rowElement.insertCell(7);
-            cell8.innerHTML = collection.units
-            var cell9 = rowElement.insertCell(8);
-            cell9.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
-            var cell10 = rowElement.insertCell(9);
-            cell10.innerHTML = '<button onclick=doDelete(this)>delete</button>'
+            cell8.innerHTML = '<button onclick=doDelete(this)>Delete</button>'
 
         }
         function getCollectionFromRow(rowElement){
             var collection ={}
             collection.id  = rowElement.cells[0].firstChild.textContent
-            collection.name = rowElement.cells[1].firstChild.textContent
-            collection.collectiontypeid = rowElement.cells[2].firstChild.textContent
-            collection.startdate = rowElement.cells[3].firstChild.textContent
-            collection.enddate  = rowElement.cells[4].firstChild.textContent
-            collection.location = rowElement.cells[5].firstChild.textContent
-            collection.measurement = rowElement.cells[6].firstChild.textContent
-            collection.units = rowElement.cells[7].firstChild.textContent
+            collection.collectionid = rowElement.cells[1].firstChild.textContent
+            collection.datum = rowElement.cells[2].firstChild.textContent
+            collection.latitude = rowElement.cells[3].firstChild.textContent
+            collection.longitude  = rowElement.cells[4].firstChild.textContent
+            collection.datecollected = rowElement.cells[5].firstChild.textContent
             return collection
         }
         function setCollectionInRow(rowElement, collection){
             rowElement.cells[0].firstChild.textContent= collection.id  
-            rowElement.cells[1].firstChild.textContent= collection.name
-            rowElement.cells[2].firstChild.textContent= collection.collectiontypeid
-            rowElement.cells[3].firstChild.textContent= collection.startdate
-            rowElement.cells[4].firstChild.textContent= collection.enddate
-            rowElement.cells[5].firstChild.textContent= collection.location  
-            rowElement.cells[6].firstChild.textContent= collection.measurement
-            rowElement.cells[7].firstChild.textContent= collection.units
-    }
+            rowElement.cells[1].firstChild.textContent= collection.collectionid
+            rowElement.cells[2].firstChild.textContent= collection.datum
+            rowElement.cells[3].firstChild.textContent= collection.latitude
+            rowElement.cells[4].firstChild.textContent= collection.longitude
+            rowElement.cells[5].firstChild.textContent= collection.datecollected  
+        }
 
         function doCreate(){
             console.log("creating a collection")
@@ -305,13 +310,11 @@
                 // or convert
                 displayCollection = {}
                 displayCollection.id = collection.id
-                displayCollection.name = collection.name
-                displayCollection.collectiontypeid = collection.collectiontypeid
-                displayCollection.startdate = collection.startdate
-                displayCollection.enddate = collection.enddate
-                displayCollection.location = collection.location
-                displayCollection.measurement = collection.measurement
-                displayCollection.units = collection.units
+                displayCollection.collectionid = collection.collectionid
+                displayCollection.datum = collection.datum
+                displayCollection.latitude = collection.latitude
+                displayCollection.longitude = collection.longitude
+                displayCollection.datecollected = collection.datecollected
                 //console.log(displaycollection)
                 addCollectionToTable(displaycollection)
             }
@@ -319,26 +322,23 @@
         function convertDisplayCollectionToServerCollection(displayCollection){
             serverCollection = {}
             serverCollection.id = displayCollection.id
-            serverCollection.name = displayCollection.name
-            serverCollection.collectiontypeid = displayCollection.collectiontypeid
-            serverCollection.startdate = displayCollection.startdate
-            serverCollection.enddate = displayCollection.enddate
-            serverCollection.location = displayCollection.location
-            serverCollection.measurement = displayCollection.measurement
-            serverCollection.units = displayCollection.units
+            serverCollection.collectionid = displayCollection.collectionid
+            serverCollection.datum = displayCollection.datum
+            serverCollection.latitude = displayCollection.latitude
+            serverCollection.longitude = displayCollection.longitude
+            serverCollection.datecollected = displayCollection.datecollected
 
             return serverCollection
         }
         function convertServerCollectionToDisplayCollection(collection){
             displayCollection = {}
             displayCollection.id = collection.id
-            displayCollection.name = collection.name
-            displayCollection.collectiontypeid = collection.collectiontypeid
-            displayCollection.startdate = collection.startdate
-            displayCollection.enddate = collection.enddate
-            displayCollection.location = collection.location
-            displayCollection.measurement = collection.measurement
-            displayCollection.units = collection.units
+            displayCollection.collectionid = collection.collectionid
+            displayCollection.datum = collection.datum
+            displayCollection.latitude = collection.latitude
+            displayCollection.longitude = collection.longitude
+            displayCollection.datecollected = collection.datecollected
+
             return displayCollection
         }
         function processCreateResponse(result){

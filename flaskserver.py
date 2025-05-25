@@ -32,7 +32,7 @@ def renderdata():
         return render_template('createdata.html')
 
 # get all data
-@app.route('/data', methods=['GET'])
+@app.route('/getdata', methods=['GET'])
 def getdata():
         # get info on all data
         return jsonify(sciDAO.getAllData())

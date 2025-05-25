@@ -4,6 +4,11 @@
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
 
         <script src="./ajaxcalls.js"></script>
+        <!-- CSS only -->
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+        crossorigin="anonymous">
+
     </head>
     <body>
         <h1>Oceanographic Data Collections</h1>
@@ -40,9 +45,13 @@
             <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> data collection</h2>
             ID <input type="text" name="id"><br/>
             Name <input type="text" name="name"><br/>
-            Collection Type <input type="text" name="collectiontypeid"><br/>
-            Start Date <input type="text" name="startdate"><br/>
-            End Date <input type="text" name="enddate"><br/>
+            Collection Type
+            <select name="collectiontypeid">
+                <option value="1">Time Series</option>
+                <option value="2">Point in Time</option>
+            </select><br/>
+            Start Date <input type="datetime-local" name="startdate"><br/>
+            End Date <input type="datetime-local" name="enddate"><br/>
             Location <input type="text" name="location"><br/>
             Measurement <input type="text" name="measurement"><br/>
             Units <input type="text" name="units"><br/>
@@ -128,6 +137,25 @@
         });
         }
 
+        function getAllCTypes(){
+        $.ajax({
+            "url": "/datacollectiontypes",
+            "method":"GET",
+            "data":"",
+            "dataType": "JSON",
+            "success":function(result){
+                //console.log(result);
+                for (ctype of result){
+                    //addCollectionToTable(collection)
+                    addCTypeToDropdown(ctype)
+                }                     
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+        }
+
         function showCreate(){
             document.getElementById("createUpdateForm").style.display = "block"
             
@@ -171,7 +199,7 @@
             form.querySelector('input[name="id"]').disabled = false
             form.querySelector('input[name="id"]').value  =''
             form.querySelector('input[name="name"]').value=''
-            form.querySelector('input[name="collectiontypeid"]').value=''
+            form.querySelector('select[name="collectiontypeid"]').value=''
             form.querySelector('input[name="startdate"]').value=''
             form.querySelector('input[name="enddate"]').value  =''
             form.querySelector('input[name="location"]').value=''
@@ -185,7 +213,7 @@
        	    var collection = {}
         	collection.id = form.querySelector('input[name="id"]').value
         	collection.name = form.querySelector('input[name="name"]').value
-        	collection.collectiontypeid = form.querySelector('input[name="collectiontypeid"]').value
+        	collection.collectiontypeid = form.querySelector('select[name="collectiontypeid"]').value
         	collection.startdate = form.querySelector('input[name="startdate"]').value
             collection.enddate = form.querySelector('input[name="enddate"]').value
         	collection.location = form.querySelector('input[name="location"]').value
@@ -199,9 +227,9 @@
         	form.querySelector('input[name="id"]').disabled = true
        		form.querySelector('input[name="id"]').value  = collection.id
        		form.querySelector('input[name="name"]').value= collection.name
-        	form.querySelector('input[name="collectiontypeid"]').value= collection.collectiontypeid
+        	form.querySelector('select[name="collectiontypeid"]').value= collection.collectiontypeid
         	form.querySelector('input[name="startdate"]').value= collection.startdate
-            form.querySelector('input[name="enddate"]').value  = collection.enddate
+            form.querySelector('input[name="enddate"]').value = collection.enddate
        		form.querySelector('input[name="location"]').value= collection.location
         	form.querySelector('input[name="measurement"]').value= collection.measurement
         	form.querySelector('input[name="units"]').value= collection.units
@@ -233,7 +261,7 @@
             var cell9 = rowElement.insertCell(8);
             cell9.innerHTML = '<button onclick="showUpdate(this)">Update</button>'
             var cell10 = rowElement.insertCell(9);
-            cell10.innerHTML = '<button onclick=doDelete(this)>delete</button>'
+            cell10.innerHTML = '<button onclick=doDelete(this)>Delete</button>'
 
         }
         function getCollectionFromRow(rowElement){
@@ -352,8 +380,22 @@
             console.log("nothing:"+result)
             return "done"
         }
-        getAllAjax(processGetAllResponse)
 
+        function addCTypeToDropdown(ctype){
+            displayCType = convertServerCTypeToDisplayCType(ctype)
+            // get table elements
+            var form = document.getElementById('createUpdateForm')
+            form.querySelector('select[name="collectiontypeid"]')
+        }
+
+        function convertServerCTypeToDisplayCType(ctype){
+            displayCType = {}
+            displayCType.id = ctype.id
+            displayCType.name = ctype.collectiontype
+            return displayCType
+        }
+        getAllAjax(processGetAllResponse)
+        getAllCTypes()
         
     </script>
 </html>

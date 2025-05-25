@@ -79,7 +79,7 @@ class SciDAO:
     # get all collections          
     def getAllCollections(self):
         #TODO comment
-        sqlstring = "SELECT * FROM collection"
+        sqlstring = "SELECT C.id, name, CT.collectiontype, startdate, enddate, location, measurement, units FROM collection C JOIN collection_type CT ON C.collectiontypeid = CT.id"
         returnArray = self.fetchAll(sqlstring, self.dbvalues["collection"])
         return returnArray
     # get all collection types 
@@ -91,7 +91,7 @@ class SciDAO:
     # get all data
     def getAllData(self):
         #TODO comment
-        sqlstring = "SELECT * FROM data"
+        sqlstring = "SELECT D.id, C.name, datum, latitude, longitude, datecollected FROM data D JOIN collection C ON D.collectionid = C.id"
         returnArray = self.fetchAll(sqlstring, self.dbvalues["data"])
         return returnArray
     # find collection by id
