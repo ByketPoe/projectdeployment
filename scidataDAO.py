@@ -155,7 +155,7 @@ class SciDAO:
 sciDAO = SciDAO()
 
 if __name__ == "__main__":
-    collection = {"name":"nextcollection", "collectiontypeid":2, "startdate":"2025-05-04 00:00:00", "enddate":"2025-07-04 00:00:00", "location":"Lough Key", "measurement":"Salinity", "units":"g/L"} 
+    collection = {"name":"cool", "collectiontypeid":2, "startdate":"2025-05-04 00:00:00", "enddate":"2025-07-04 00:00:00", "location":"Lough Key", "measurement":"Salinity", "units":"g/L"} 
     data = {"collectionid":1, "datum":"5.9", "latitude":"12.678", "longitude":"25.806796", "datecollected":"2025-07-04 21:37:22"}
     print(sciDAO.createCollection(collection))
     # print(sciDAO.createData(data))
@@ -163,6 +163,7 @@ if __name__ == "__main__":
     # sciDAO.updateData(data, 1)
     # sciDAO.deleteCollection(2)
     # sciDAO.deleteData(1)
+    sciDAO.createData(data)
     print(sciDAO.getAllCollections())
     print(sciDAO.getAllCollectionTypes())
     print(sciDAO.getAllData())

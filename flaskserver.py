@@ -38,7 +38,7 @@ def getdatabyid(id):
         return jsonify(sciDAO.getDataByID((id,)))
 
 # create collection
-@app.route('/datacollections', methods=['POST'])
+@app.route('/datacollections/', methods=['POST'])
 def createcollection():
         # create new collection of data
         jsonstring = request.json
@@ -66,7 +66,7 @@ def createcollection():
         collection["units"] = jsonstring["units"]
         return jsonify(sciDAO.createCollection(collection))
 # create data
-@app.route('/data', methods=['POST'])
+@app.route('/data/', methods=['POST'])
 def createdata():
         # create new data entry
         jsonstring = request.json
