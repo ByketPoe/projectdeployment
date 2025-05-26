@@ -1,6 +1,5 @@
 import requests
 import pandas as pd
-# import geopandas as gpd
 from xml.dom.minidom import parseString
 # from shapely.geometry import Point, Polygon, LineString
 # import matplotlib.pyplot as plt
