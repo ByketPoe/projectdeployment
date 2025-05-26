@@ -89,8 +89,9 @@
 			</ul>
 		</div>
         <div>
-            <p>Welcome to the Oceanographic Data archive.</p>
+            <h2>Welcome to the Oceanographic Data archive.</h2>
             <p>Here, we store data relating to Ocean and Marine sciences. Each dataset is stored as a single collection, with each collection having a number of data entries associated with them. Data collections can be classified as Time Series or Point in Time, depending on the nature of how the data was gathered. You are welcome to browse the data collections to facilitate your own research. If you have data of your own you would like to add, simply follow the below steps:</p>
+            <p><b>Current collection count: <span id="count"></span></b></p>
             <p>Step 1 - Choose a Collection Type. They can be viewed <a href="/datacollectiontypes">here.</a></p>
             <p>Step 2 - Add a Data Collection. This can be done using the "Create a data collection" button below. Make sure to choose the appropriate collection type from the dropdown.</p>
             <p>Step 3 - You are now ready to add data entries to the archive. You can do that <a href="/data">here.</a> Take note of the ID of the collection with which you wish to associate your data with, so that you can enter it into the data creation form.</a></p>
@@ -147,6 +148,7 @@
     </body>
     <script>
         var raiseError
+        var count
         function getAllAjax(callback){
         $.ajax({
             "url": "/datacollections",
@@ -157,7 +159,8 @@
                 console.log(result);
                 for (collection of result){
                     addCollectionToTable(collection)
-                }                     
+                }
+                getCount()                     
             },
             "error":function(xhr,status,error){
                 console.log("error: "+status+" msg:"+error);
@@ -231,6 +234,21 @@
                     //addCollectionToTable(collection)
                     addCTypeToDropdown(ctype)
                 }                     
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+        }
+        function getCount(callback){
+        $.ajax({
+            "url": "/datacollectionscount",
+            "method":"GET",
+            "data":"",
+            "dataType": "JSON",
+            "success":function(result){
+                console.log(result)
+                pullCount(result)                
             },
             "error":function(xhr,status,error){
                 console.log("error: "+status+" msg:"+error);
@@ -509,8 +527,16 @@
             }
             return true
         }
+
+        function pullCount(countDict){
+            console.log(countDict)
+            count = countDict["count"][0]
+            document.getElementById('count').innerHTML = count
+            console.log(count)
+        }
         getAllAjax(processGetAllResponse)
         getAllCTypes()
+        
         
     </script>
 </html>

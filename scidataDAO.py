@@ -76,6 +76,22 @@ class SciDAO:
         else:
             self.closeAll()
             print(committype, "completed on item: ", changeitem)
+
+    def fetchCount(self, sqlstring): # values is a tuple
+        cursor = self.getcursor()
+        cursor.execute(sqlstring)
+        result = cursor.fetchall()
+        returnvalue = self.convertToDictionary(result, ["count"])
+        self.closeAll()
+        return returnvalue
+    
+    # get count of collections        
+    def getCollectionsCount(self):
+        #TODO comment
+        sqlstring = "SELECT COUNT(*) FROM collection"
+        returnArray = self.fetchCount(sqlstring)
+        return returnArray
+
     # get all collections          
     def getAllCollections(self):
         #TODO comment
@@ -163,7 +179,8 @@ if __name__ == "__main__":
     # sciDAO.updateData(data, 1)
     # sciDAO.deleteCollection(2)
     # sciDAO.deleteData(1)
-    sciDAO.createData(data)
-    print(sciDAO.getAllCollections())
-    print(sciDAO.getAllCollectionTypes())
-    print(sciDAO.getAllData())
+    # sciDAO.createData(data)
+    # print(sciDAO.getAllCollections())
+    # print(sciDAO.getAllCollectionTypes())
+    # print(sciDAO.getAllData())
+    print(sciDAO.getCollectionsCount())

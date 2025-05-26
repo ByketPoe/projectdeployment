@@ -9,6 +9,12 @@ app = Flask(__name__)
 def index():
         return render_template('index.html')
 
+# get collections count
+@app.route('/datacollectionscount', methods=['GET'])
+def getcollectionscount():
+        # get info on all collections
+        return sciDAO.getCollectionsCount()
+
 # get all collections
 @app.route('/datacollections', methods=['GET'])
 def getcollections():
