@@ -175,3 +175,6 @@ cython_debug/
 
 # Database config file (local)
 db_config.py
+externalsource copy.py
+externalsource.py
+externalsource.py
