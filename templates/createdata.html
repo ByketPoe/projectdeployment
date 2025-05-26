@@ -76,9 +76,13 @@
 			<!-- menu consists of unordered list-->
 			  <li><a href="/">Home</a></li>
 			  <li><a href="/datacollectiontypes">View Collection Types</a></li>
-			  <li><a href="/data">Create Data</a></li>
+			  <li><a href="/data">View Data</a></li>
 			</ul>
 		</div>
+        <div>
+            <p>Below is all of the data stored in the archive.</p>
+            <p>Some external mapping data is available <a href="/map" onclick="getExternal()">here</a>, showing spawning and nursery grounds of commercially important fish species.</p>
+        </div>
         <div id="createUpdateForm" style="display:none">
             <!-- spans are like divs but do not go onto a new line -->
             <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> data collection</h2>
@@ -185,6 +189,21 @@
             "success":function(result){
                 console.log(result);
                 callback(result)  
+            },
+            "error":function(xhr,status,error){
+                console.log("error: "+status+" msg:"+error);
+            }
+        });
+        }
+        function getExternal(callback){
+        console.log("getting data");
+        $.ajax({
+            "url": "/getexternal",
+            "method":"GET",
+            "data":"",
+            "dataType": "JSON",
+            "success":function(result){
+                getAllAjax()                    
             },
             "error":function(xhr,status,error){
                 console.log("error: "+status+" msg:"+error);
