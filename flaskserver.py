@@ -24,7 +24,7 @@ def getexternal():
 @app.route('/datacollectionscount', methods=['GET'])
 def getcollectionscount():
         # get info on all collections
-        return sciDAO.getCollectionsCount()
+        return jsonify(sciDAO.getCollectionsCount())
 
 # get all collections
 @app.route('/datacollections', methods=['GET'])
