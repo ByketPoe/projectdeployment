@@ -1,6 +1,5 @@
 from flask import Flask, request, jsonify, abort, render_template
 from scidataDAO import sciDAO
-import externalsource 
 
 app = Flask(__name__)
 
@@ -12,13 +11,6 @@ def index():
 @app.route('/map')
 def getmap():
         return render_template('map.html')
-
-# get external
-@app.route('/getexternal', methods=['GET'])
-
-def getexternal():
-        # get info on all collections
-        return externalsource.runExternal.runAll()
 
 # get collections count
 @app.route('/datacollectionscount', methods=['GET'])
