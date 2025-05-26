@@ -16,16 +16,24 @@
             list-style-type: none;
             
             }
-        td, th, h1 {
+        td, th, h1, h2 {
             padding: 20;
             border-bottom: 1px solid gray;
         }
-        tr:hover {
-            background-color: rgb(82, 129, 218);
-            }
+        #stick {
+            position: sticky;
+            top: 0;
+        }
+        
         tr:nth-child(even) {
             background-color: rgb(193, 194, 193);
         }
+        tr:nth-child(odd) {
+            background-color: rgb(67, 147, 194);
+        }
+        tr:hover {
+            background-color: rgb(255, 255, 255);
+            }
         div {
             margin-left: 100;
             margin-right: 100;
@@ -33,6 +41,40 @@
         }
         #nav {
             border-bottom: 1px solid gray;
+        }
+        #createUpdateForm {
+            height: 500px;
+            position: relative;
+            border: 3px solid rgb(67, 147, 194);
+            background-color: rgb(142, 209, 240);
+        }
+        #createUpdateForm .button {
+            margin: 0;
+            position: absolute;
+            top: 90%;
+            border: 3px solid rgb(67, 147, 194);
+        }
+        label{
+            padding: 5;
+        }
+        form {
+            text-align: left;
+            padding-left:300;
+            overflow: hidden;
+        }
+        input, select {
+            margin-right: 300;
+            float: right;
+            clear: both;
+        }
+        #newbuttondiv {
+            height:10;
+            position: relative;
+        }
+        #newbuttondiv .button {
+            margin: 0;
+            position: absolute;
+            top: 90%;
         }
         </style>
     </head>
@@ -57,29 +99,31 @@
         <div id="createUpdateForm" style="display:none">
             <!-- spans are like divs but do not go onto a new line -->
             <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> data collection</h2>
-            ID <input type="text" name="id"><br/>
-            Name <input type="text" name="name"><br/>
-            Collection Type
-            <select name="collectiontypeid">
-                <option value="1">Time Series</option>
-                <option value="2">Point in Time</option>
-            </select><br/>
-            Start Date <input type="datetime-local" name="startdate"><br/>
-            End Date <input type="datetime-local" name="enddate"><br/>
-            Location <input type="text" name="location"><br/>
-            Measurement <input type="text" name="measurement"><br/>
-            Units <input type="text" name="units"><br/>
-           
-            <span><button id="button-doCreate" onclick="doCreate()">Create</button></span>
- 			<span><button id="button-doUpdate" onclick="doUpdate()">Update</button></span>
+            <form>
+                <label>ID:</label><input type="text" name="id"><br/>
+                <label>Name:</label><input type="text" name="name"><br/>
+                <label>Collection Type:</label>
+                <select name="collectiontypeid">
+                    <option value="1">Time Series</option>
+                    <option value="2">Point in Time</option>
+                </select><br/>
+                <label>Start Date:</label><input type="datetime-local" name="startdate"><br/>
+                <label>End Date:</label><input type="datetime-local" name="enddate"><br/>
+                <label>Location:</label><input type="text" name="location"><br/>
+                <label>Measurement:</label><input type="text" name="measurement"><br/>
+                <label>Units:</label><input type="text" name="units"><br/>
+            </form>
+            <span class="button"><button id="button-doCreate" onclick="doCreate()">Create</button></span>
+ 			<span class="button"><button id="button-doUpdate" onclick="doUpdate()">Update</button></span>
              <!-- "display:none" will make it hidden-->
+            <div id="error" style="display:none">There was an error sending data. Please ensure all fields are completed</div>
 
 
         </div>
-        <div><button id="button-showCreate" onclick="showCreate()">Create a data collection</button><br/><br/></div>
+        <div id="newbuttondiv"><button id="button-showCreate" onclick="showCreate()">Create a data collection</button><br/><br/></div>
         <div>
             <table border="1" id="collectionTable">
-                <tr>
+                <tr id="stick">
                         <th>ID</th>
                         <th>Name</th>
                         <th>Collection Type</th>
@@ -96,31 +140,13 @@
         </table>
         <br/>
         </div>
-        <div id="createUpdateForm" style="display:none">
-            <!-- spans are like divs but do not go onto a new line -->
-            <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> data collection</h2>
-            ID <input type="text" name="id"><br/>
-            Name <input type="text" name="name"><br/>
-            Collection Type
-            <select name="collectiontypeid">
-                <option value="1">Time Series</option>
-                <option value="2">Point in Time</option>
-            </select><br/>
-            Start Date <input type="datetime-local" name="startdate"><br/>
-            End Date <input type="datetime-local" name="enddate"><br/>
-            Location <input type="text" name="location"><br/>
-            Measurement <input type="text" name="measurement"><br/>
-            Units <input type="text" name="units"><br/>
-           
-            <span><button id="button-doCreate" onclick="doCreate()">Create</button></span>
- 			<span><button id="button-doUpdate" onclick="doUpdate()">Update</button></span>
-             <!-- "display:none" will make it hidden-->
 
 
         </div>
         
     </body>
     <script>
+        var raiseError
         function getAllAjax(callback){
         $.ajax({
             "url": "/datacollections",
@@ -275,8 +301,19 @@
         	collection.location = form.querySelector('input[name="location"]').value
         	collection.measurement = form.querySelector('input[name="measurement"]').value
         	collection.units = form.querySelector('input[name="units"]').value
+            var check = validateData(collection) // return boolean
+            console.log(check)
+            if (!check){
+                document.getElementById("error").style.display = "block"
+                raiseError = true
+                console.log(raiseError)
+                return {}
+            }
+            else{
+                return collection
+            }
         	//console.log(JSON.stringify(collection))
-            return collection
+            
         }
         function populateFormWithCollection(collection){
        		var form = document.getElementById('createUpdateForm')
@@ -344,17 +381,28 @@
     }
 
         function doCreate(){
+            document.getElementById("error").style.display = "none"
             console.log("creating a collection")
             collection = getCollectionFromForm()
             console.log(collection)
+            console.log(raiseError)
+            if (raiseError){
+                raiseError = false
+                return
+            }
             // I need to wait until I get the id from the server before adding this to the table
             // so  I put that code in the callback function
             createCollection(convertDisplayCollectionToServerCollection(collection), processCreateResponse(collection))
            
         }
         function doUpdate(){
+            document.getElementById("error").style.display = "block"
             collection = getCollectionFromForm()
             console.log(collection)
+            if (raiseError){
+                raiseError = false
+                return
+            }
             var rowElement = document.getElementById(collection.id)
             setCollectionInRow(rowElement, collection)
             // now I am updating on the server
@@ -449,6 +497,17 @@
             displayCType.id = ctype.id
             displayCType.name = ctype.collectiontype
             return displayCType
+        }
+
+        function validateData(checkDict){
+            console.log(checkDict)
+            console.log("validating")
+            for(var key in checkDict){
+                if (checkDict[key] === ''){
+                    return false
+                }
+            }
+            return true
         }
         getAllAjax(processGetAllResponse)
         getAllCTypes()
