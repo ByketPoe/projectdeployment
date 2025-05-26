@@ -14,8 +14,9 @@
             margin-right: auto;
             text-align: center;
             list-style-type: none;
+            
             }
-        td, th {
+        td, th, h1 {
             padding: 20;
             border-bottom: 1px solid gray;
         }
@@ -24,6 +25,14 @@
             }
         tr:nth-child(even) {
             background-color: rgb(193, 194, 193);
+        }
+        div {
+            margin-left: 100;
+            margin-right: 100;
+            margin-top: 30;
+        }
+        #nav {
+            border-bottom: 1px solid gray;
         }
         </style>
     </head>
@@ -37,6 +46,36 @@
 			  <li><a href="/data">Create Data</a></li>
 			</ul>
 		</div>
+        <div>
+            <p>Welcome to the Oceanographic Data archive.</p>
+            <p>Here, we store data relating to Ocean and Marine sciences. Each dataset is stored as a single collection, with each collection having a number of data entries associated with them. Data collections can be classified as Time Series or Point in Time, depending on the nature of how the data was gathered. You are welcome to browse the data collections to facilitate your own research. If you have data of your own you would like to add, simply follow the below steps:</p>
+            <p>Step 1 - Choose a Collection Type. They can be viewed <a href="/datacollectiontypes">here.</a></p>
+            <p>Step 2 - Add a Data Collection. This can be done using the "Create a data collection" button below. Make sure to choose the appropriate collection type from the dropdown.</p>
+            <p>Step 3 - You are now ready to add data entries to the archive. You can do that <a href="/data">here.</a> Take note of the ID of the collection with which you wish to associate your data with, so that you can enter it into the data creation form.</a></p>
+        </div>
+        
+        <div id="createUpdateForm" style="display:none">
+            <!-- spans are like divs but do not go onto a new line -->
+            <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> data collection</h2>
+            ID <input type="text" name="id"><br/>
+            Name <input type="text" name="name"><br/>
+            Collection Type
+            <select name="collectiontypeid">
+                <option value="1">Time Series</option>
+                <option value="2">Point in Time</option>
+            </select><br/>
+            Start Date <input type="datetime-local" name="startdate"><br/>
+            End Date <input type="datetime-local" name="enddate"><br/>
+            Location <input type="text" name="location"><br/>
+            Measurement <input type="text" name="measurement"><br/>
+            Units <input type="text" name="units"><br/>
+           
+            <span><button id="button-doCreate" onclick="doCreate()">Create</button></span>
+ 			<span><button id="button-doUpdate" onclick="doUpdate()">Update</button></span>
+             <!-- "display:none" will make it hidden-->
+
+
+        </div>
         <div><button id="button-showCreate" onclick="showCreate()">Create a data collection</button><br/><br/></div>
         <div>
             <table border="1" id="collectionTable">

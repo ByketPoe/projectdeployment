@@ -14,8 +14,9 @@
             margin-right: auto;
             text-align: center;
             list-style-type: none;
+            
             }
-        td, th {
+        td, th, h1 {
             padding: 20;
             border-bottom: 1px solid gray;
         }
@@ -24,6 +25,14 @@
             }
         tr:nth-child(even) {
             background-color: rgb(193, 194, 193);
+        }
+        div {
+            margin-left: 100;
+            margin-right: 100;
+            margin-top: 30;
+        }
+        #nav {
+            border-bottom: 1px solid gray;
         }
         </style>
     </head>
@@ -58,12 +67,12 @@
         <div id="createUpdateForm" style="display:none">
             <!-- spans are like divs but do not go onto a new line -->
             <h2><span id="createLabel">Create a</span> <span id="updateLabel">Update this</span> data collection</h2>
-            ID <input type="text" name="id"><br/>
-            Collection ID <input type="text" name="collectionid"><br/>
+            <p>ID</p><input type="text" name="id" id="id"><br/>
+            <p> Collection ID </p><input type="text" name="collectionid"><br/>
             Datum <input type="text" name="datum"><br/>
             Latitude <input type="text" name="latitude"><br/>
             Longitude <input type="text" name="longitude"><br/>
-            Date Collected <input type="text" name="datecollected"><br/>
+            Date Collected <input type="datetime-local" name="datecollected"><br/>
            
             <span><button id="button-doCreate" onclick="doCreate()">Create</button></span>
  			<span><button id="button-doUpdate" onclick="doUpdate()">Update</button></span>
@@ -157,6 +166,7 @@
 
             document.getElementById("button-showCreate").style.display = "none"
             document.getElementById("collectionTable").style.display = "none"
+            document.getElementById("id").style.visibility = "hidden";  
             
         }
         function showUpdate(buttonElement){
