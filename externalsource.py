@@ -1,9 +1,9 @@
 import requests
 import pandas as pd
-import geopandas as gpd
+# import geopandas as gpd
 from xml.dom.minidom import parseString
-from shapely.geometry import Point, Polygon, LineString
-import matplotlib.pyplot as plt
+# from shapely.geometry import Point, Polygon, LineString
+# import matplotlib.pyplot as plt
 import folium
 
 class runExternal:
@@ -64,3 +64,6 @@ class runExternal:
 
         m.save("templates/map.html")
         return "True"
+
+if __name__ == "__main__":
+    runExternal.runAll()
